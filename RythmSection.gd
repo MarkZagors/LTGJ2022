@@ -19,8 +19,8 @@ onready var data = {
 	},
 	"Rythm2": {
 		"bpm": 120,
-		"song": preload("res://Music/gamejamjam1.wav"),
-		"notes": "",
+		"song": preload("res://Music/setion_nature.wav"),
+		"notes": "200u 600u 1000u 1400u 1800r 2200d 2600l 3200d 3300r 3400u 3500l 3700d 3800r 3850u 3900l 4000u 4100r 4200d 4300r 4400u 4450l 4500d 4700l 4800r 4900l 5000r 5100l 5200d 5400l 5600d 5800r 6000u 6100l 6300d 6400d 6500r 6600u 6700l 6900d 7000l 7050u 7100r 7200u 7300r 7400d 7500r 7600u 7650l 7700d 7900l 8000r 8100l 8200r 8300l 8400u 8600r 8800d 9000r 9200l 9400u 10400w",
 	},
 	"Rythm3": {
 		"bpm": 120,
