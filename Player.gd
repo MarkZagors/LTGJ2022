@@ -12,8 +12,17 @@ onready var sprite = get_node("Sprite")
 var colliding_right = false
 var colliding_left = false
 var canMove = true
+var landing = false
+
+onready var walkingSound = preload("res://walk.wav")
+onready var jumpSound = preload("res://jump (1).wav")
 
 func _ready():
+	get_node("WalkSound").playing = true
+	get_node("SlideSound").playing = true
+	get_node("WalkSound").stream_paused = true
+	get_node("SlideSound").stream_paused = true
+	
 	get_tree().paused = false
 	for level in Autoload.wonLevels:
 		get_node("..").find_node(level).get_node("CollisionShape2D").disabled = true
@@ -26,6 +35,8 @@ func _ready():
 		get_node("ExplodeTimer").start()
 		get_node("Sprite").animation = "idle"
 		position = Autoload.charPos
+		
+		get_node("LevelCompleteSound").playing = true
 
 func _physics_process (delta):
 	if canMove == false:
@@ -54,16 +65,29 @@ func _physics_process (delta):
 	
 	if Input.is_action_pressed("move_left") and is_on_floor():
 		get_node("Sprite").animation = "run"
+		get_node("WalkSound").stream_paused = false
+		get_node("SlideSound").stream_paused = true
 	elif Input.is_action_pressed("move_right") and is_on_floor():
 		get_node("Sprite").animation = "run"
+		get_node("WalkSound").stream_paused = false
+		get_node("SlideSound").stream_paused = true
 	elif is_on_wall():
 		get_node("Sprite").animation = "wall"
+		get_node("WalkSound").stream_paused = true
+		get_node("SlideSound").stream_paused = false
 	elif not is_on_floor() and vel.y > 0:
 		get_node("Sprite").animation = "jumpDown"
+		get_node("WalkSound").stream_paused = true
+		get_node("SlideSound").stream_paused = true
+		landing = true
 	elif not is_on_floor() and vel.y <= 0:
 		get_node("Sprite").animation = "jumpUp"
+		get_node("WalkSound").stream_paused = true
+		get_node("SlideSound").stream_paused = true
 	else:
 		get_node("Sprite").animation = "idle"
+		get_node("WalkSound").stream_paused = true
+		get_node("SlideSound").stream_paused = true
 	
 	vel.y += gravity * delta
 	if is_on_wall():
@@ -72,6 +96,7 @@ func _physics_process (delta):
 	colliding_right = false
 	if Input.is_action_just_pressed("jump") and is_on_floor():
 		vel.y -= jumpForce
+		get_node("JumpSound").playing = true
 	else:
 		if get_node("WallLeft").is_colliding():
 			colliding_left = true
@@ -82,10 +107,12 @@ func _physics_process (delta):
 		vel.y = 0
 		vel.y -= jumpForce
 		kickback_vel = -kickback
+		get_node("JumpSound").playing = true
 	if Input.is_action_just_pressed("jump") and colliding_left:
 		vel.y = 0
 		vel.y -= jumpForce
 		kickback_vel = kickback
+		get_node("JumpSound").playing = true
 	
 	if Input.is_action_just_released("jump") and vel.y < 0:
 		vel.y = 0
@@ -94,6 +121,10 @@ func _physics_process (delta):
 		sprite.flip_h = true
 	elif vel.x > 0:
 		sprite.flip_h = false
+		
+	if landing and is_on_floor():
+		get_node("LandSound").playing = true
+		landing = false
 	
 	vel = move_and_slide(vel, Vector2.UP)
 

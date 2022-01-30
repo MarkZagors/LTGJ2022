@@ -86,6 +86,8 @@ func checkPress(noteDir):
 				var part = hitParticles.instance()
 				part.emitting = true
 				get_node("Particles").add_child(part)
+				get_node("Chimes").pitch_scale = 0.98 + randf()/50.0
+				get_node("Chimes").play()
 				note.queue_free()
 			elif note.position.length() < 200:
 				hp -= 10
@@ -145,6 +147,7 @@ func _on_QuitButton_pressed():
 	var _err = get_tree().change_scene("res://Main.tscn")
 
 func win():
+	Autoload.quited = false
 	Autoload.wonLevels.append(Autoload.rythmOrbID)
 	get_node("WinTimeout").play("Fade")
 
